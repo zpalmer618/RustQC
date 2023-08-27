@@ -1,13 +1,17 @@
 use std::fs::File;
 use std::io::prelude::*;
 
-fn main() -> std::io::Result<()> {
-    let mut file = match File::open("testfiles/geom.txt") {
-        Ok(f) => f,
-        Err(_) => todo!(),
-    }; // Or just use a '?' instead of match
+fn main() {
+    let (contents, charge, x, y, z) = load_geom();
+    dbg!(charge, x, y, z);
+    println!("{}", contents);
+}
+
+/// Load a geometry from geom.txt and split it into appropriate vectors
+fn load_geom() -> (String, Vec<usize>, Vec<f64>, Vec<f64>, Vec<f64>) {
+    let file = File::open("testfiles/geom.txt");
     let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
+    file.expect("failed to open file").read_to_string(&mut contents).unwrap();
     let mut charge = Vec::new();
     let mut x = Vec::new();
     let mut y = Vec::new();
@@ -21,7 +25,5 @@ fn main() -> std::io::Result<()> {
             z.push(line[3].parse::<f64>().unwrap());
         }
     }
-    dbg!(charge, x, y, z);
-    println!("{}", contents);
-    Ok(())
+    (contents, charge, x, y, z)
 }
