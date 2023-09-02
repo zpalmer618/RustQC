@@ -36,12 +36,27 @@ fn load_geom() -> (String, Molecule) {
     (contents, Molecule { atoms })
 }
 
-// fn bond_length() {
-//     for i in
-// }
+impl Molecule {
+    fn bond_length(&self) -> Vec<(usize, usize, f64)> {
+        let mut ret = Vec::new();
+        for (indexi, atomi) in self.atoms.iter().enumerate() {
+            for (indexj, atomj) in self.atoms.iter().enumerate() {
+                if indexi < indexj {
+                    let xs = (atomi.x - atomj.x).powi(2);
+                    let ys = (atomi.y - atomj.y).powi(2);
+                    let zs = (atomi.z - atomj.z).powi(2);
+                    let bl = (xs + ys + zs).sqrt();
+                    ret.push((indexi, indexj, bl));
+                    println!("{:5} {} {:5.2}", indexi, indexj, bl);
+                }
+            }
+        }
+        ret
+    }
+}
 
 fn main() {
     let (contents, mol) = load_geom();
-    dbg!(mol);
+    mol.bond_length();
     println!("{}", contents);
 }
